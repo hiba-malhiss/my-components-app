@@ -50,7 +50,8 @@ const Calendar = ({
     isDateDisabled,
     onYearSelect,
     onMonthSelect,
-    onDateSelect
+    onDateSelect,
+    selectedDate
   } = useCalendar({
     value,
     typeView,
@@ -99,7 +100,7 @@ const Calendar = ({
               <CalendarButton
                 key={year}
                 isDisabled={isYearDisabled(year)}
-                isSelected={visibleDate.year() === year}
+                isSelected={selectedDate?.year() === year}
                 onClick={() => onYearSelect(year)}
               >
                 {year}
@@ -114,7 +115,7 @@ const Calendar = ({
               <CalendarButton
                 key={monthName}
                 isDisabled={isMonthDisabled(i)}
-                isSelected={visibleDate.month() === i}
+                isSelected={selectedDate?.month() === i && selectedDate?.year() === visibleDate.year()}
                 onClick={() => onMonthSelect(i)}
               >
                 {monthName}
@@ -132,12 +133,12 @@ const Calendar = ({
               <React.Fragment key={i}>
                 {week.map((date) => (
                   <CalendarButton
-                    key={date}
+                    key={date.formattedDate}
                     isDisabled={isDateDisabled(date)}
                     isSelected={
-                      value?.date() === date.day &&
-                      value?.month() === date.month &&
-                      value?.year() === date.year
+                      selectedDate?.date() === date.day &&
+                      selectedDate?.month() === date.month &&
+                      selectedDate?.year() === date.year
                     }
                     isRounded
                     isHighlighted={date.today}
