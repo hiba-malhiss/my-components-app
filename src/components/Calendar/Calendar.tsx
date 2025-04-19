@@ -94,7 +94,7 @@ const Calendar = ({
         </div>
 
         {currentView === 'year' && (
-          <div className={styles['Calendar-menu']}>
+          <div className={`${styles['Calendar-menu']} ${styles['Calendar-yearsMenu']}`}>
             {yearsList.map((year) => (
               <CalendarButton
                 key={year}
@@ -132,7 +132,7 @@ const Calendar = ({
               <React.Fragment key={i}>
                 {week.map((date) => (
                   <CalendarButton
-                    key={date.formattedDate}
+                    key={date}
                     isDisabled={isDateDisabled(date)}
                     isSelected={
                       value?.date() === date.day &&

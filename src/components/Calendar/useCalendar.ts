@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import moment, { Moment } from 'moment';
-import { createMonth, DayInfo, Month } from './calendar.utils';
+import { createMonth, DayInfo } from './calendar.utils';
 
 type CalendarTypeView = 'month' | 'year' | 'date';
 
@@ -27,7 +27,6 @@ export const useCalendar = ({
   const [currentView, setCurrentView] = useState<CalendarTypeView>(typeView);
   const [visibleDate, setVisibleDate] = useState<Moment>(value?.clone() || today);
   const [isOverlayVisible, setOverlayVisible] = useState(false);
-  const [month, setMonth] = useState<Month>(createMonth(visibleDate.month(), visibleDate.year()));
   const [decadeBaseYear, setDecadeBaseYear] = useState<number>(today.year());
   const [yearsList, setYearsList] = useState<number[]>([]);
 
@@ -37,16 +36,14 @@ export const useCalendar = ({
   }, [decadeBaseYear]);
 
   useEffect(() => {
-    if (typeView === 'date') {
-      setMonth(createMonth(visibleDate.month(), visibleDate.year()));
-    }
-  }, [visibleDate]);
-
-  useEffect(() => {
     if (value) {
       setVisibleDate(value.clone());
     }
   }, [value]);
+
+  const month = useMemo(() => {
+    return createMonth(visibleDate.month(), visibleDate.year());
+  }, [visibleDate.month(), visibleDate.year()]);
 
   const getCalendarLabel = () => {
     if (!value) return dateFormat;

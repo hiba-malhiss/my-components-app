@@ -33,6 +33,10 @@
     min-width: 280px;
     grid-template-columns: repeat(2, 1fr);
 
+    &.Calendar-yearsMenu {
+      min-height: 204px;
+    }
+
     &.Calendar-monthsMenu {
       grid-template-columns: repeat(3, 1fr);
     }
