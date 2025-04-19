@@ -73,7 +73,7 @@ const Calendar = ({
           <Button iconLeft={faChevronLeft} appearance="plainDefault" onClick={onPrev}
                   className={styles['left-chevron']}/>
           {currentView === 'year' && (
-            <div className={styles["decade-range"]}>{yearsList[0]}–{yearsList[yearsList.length - 1]}</div>
+            <div className={styles["decade-range"]}>{yearsList[0]} – {yearsList[yearsList.length - 1]}</div>
           )}
           {currentView === 'date' && (
             <Button appearance="plainDefault" size="large" display="inline" onClick={() => setCurrentView('month')}>
