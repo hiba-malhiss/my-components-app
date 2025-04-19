@@ -22,14 +22,14 @@ interface CalendarProps {
   dateFormat?: string;
 }
 
-const Calendar: React.FC<CalendarProps> = ({
+const Calendar = ({
   size = 'small',
   disableFutureDates = true,
   typeView = 'date',
   value,
   onChange,
   dateFormat = DEFAULT_DATE_FORMAT
-}) => {
+}: CalendarProps) => {
   const {
     shortMonthNames,
     fullMonthNames,

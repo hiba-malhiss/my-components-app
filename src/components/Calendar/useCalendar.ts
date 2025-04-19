@@ -1,4 +1,3 @@
-// hooks/useCalendar.ts
 import { useCallback, useEffect, useState } from 'react';
 import moment, { Moment } from 'moment';
 import { createMonth, DayInfo, Month } from './calendar.utils';
@@ -7,9 +6,9 @@ type CalendarTypeView = 'month' | 'year' | 'date';
 
 interface UseCalendarProps {
   value: Moment;
-  typeView: CalendarTypeView;
-  dateFormat: string;
-  disableFutureDates: boolean;
+  typeView?: CalendarTypeView;
+  dateFormat?: string;
+  disableFutureDates?: boolean;
   onChange: (value: Moment) => void;
 }
 
