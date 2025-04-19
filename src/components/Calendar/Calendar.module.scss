@@ -1,0 +1,50 @@
+.Calendar {
+  display: inline-block;
+  position: relative;
+
+  &-header {
+    display: flex;
+    align-items: center;
+    color: var(--text-secondary);
+    min-width: 160px;
+    padding: 8px 16px 0;
+
+    .decade-range {
+      font-size: 16px !important;
+      font-weight: 600;
+      width: max-content;
+    }
+
+    .left-chevron {
+      margin-right: auto;
+    }
+
+    .right-chevron {
+      margin-left: auto;
+    }
+  }
+
+  &-menu {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 8px 16px 16px;
+    min-width: 280px;
+    grid-template-columns: repeat(2, 1fr);
+
+    &.Calendar-monthsMenu {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    &.Calendar-datesMenu {
+      grid-template-columns: repeat(7, 1fr);
+
+      .days {
+        color: var(--text-secondary);
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+    }
+  }
+}

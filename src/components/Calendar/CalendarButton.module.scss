@@ -1,0 +1,35 @@
+.CalendarButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 8px;
+  border-radius: 4px;
+  box-sizing: border-box;
+  cursor: pointer;
+  color: var(--text-01);
+
+  &:hover:not(.is-disabled):not(.is-selected) {
+    background: var(--hover-item);
+  }
+
+  &.is-disabled {
+    color: var(--disabled-02);
+    cursor: default;
+  }
+
+  &.is-selected {
+    background: var(--interactive-01);
+    color: var(--ui-01);
+    font-weight: 600;
+  }
+
+  &.is-rounded {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+  }
+
+  &.is-highlighted:not(.is-selected) {
+    background: var(--ui-background);
+  }
+}

@@ -1,0 +1,29 @@
+.AnchoredFloatingContainer {
+  position: absolute;
+  top: 100%;
+  display: none;
+  min-width: 200px;
+  margin-top: 8px;
+
+  background-color: var(--ui-01);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px 0 rgba(var(--ui-04-rgb), 0.12);
+
+  &--fullWidth {
+    width: 100%;
+    max-width: unset;
+  }
+
+  &--leftAnchor {
+    left: 0;
+  }
+
+  &--rightAnchor {
+    right: 0;
+  }
+
+  &.is-visible {
+    display: block;
+    z-index: 99999;
+  }
+}

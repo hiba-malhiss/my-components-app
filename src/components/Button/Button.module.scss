@@ -1,0 +1,269 @@
+// ============================
+// Button Mixins
+// ============================
+
+@mixin button-default($color, $background, $icon-color: null) {
+  background-color: var($background);
+  color: var($color);
+
+  &:not(.is-disabled) .Button-icon {
+    color: if($icon-color != null, var($icon-color), var($color));
+  }
+}
+
+@mixin button-active($color, $background) {
+  &:active:not(.is-disabled):not(.has-error):not(.is-calculated):not(.is-selected) {
+    background-color: var($background) !important;
+    color: var($color);
+
+    .Button-icon {
+      color: var($color);
+    }
+  }
+}
+
+@mixin button-selected($color, $background, $border: --interactive-03) {
+  &.is-selected {
+    background-color: var($background);
+    color: var($color);
+    border-color: var($border);
+
+    .Button-icon {
+      color: var($color);
+    }
+  }
+}
+
+@mixin button-hover(
+  $color,
+  $background,
+  $border: --interactive-03,
+  $icon-color: $color,
+  $text-underline-decoration: --interactive-03
+) {
+  &:hover:not(.is-disabled):not(.is-selected):not(.is-calculated) {
+    background-color: var($background);
+    color: var($color);
+    border-color: var($border);
+    text-decoration-color: var($text-underline-decoration);
+
+    .Button-icon {
+      color: var($icon-color);
+    }
+  }
+}
+
+@mixin icon-spacing($left-margin, $right-padding) {
+  &--left {
+    margin-right: var($left-margin);
+  }
+
+  &--right {
+    padding-left: var($right-padding);
+  }
+}
+
+@mixin size-icon-spacing($left-spacing, $right-spacing) {
+  .Button-icon {
+    @include icon-spacing($left-spacing, $right-spacing);
+  }
+}
+
+// ============================
+// Button Base
+// ============================
+
+.Button {
+  align-items: center;
+  border-radius: 4px;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: flex;
+  font-weight: 600;
+  justify-content: center;
+  line-height: 1;
+  position: relative;
+  white-space: nowrap;
+
+  transition: background-color var(--transition-fast) linear,
+  box-shadow var(--transition-fast) linear, color var(--transition-fast) linear;
+
+  &-icon {
+    display: block;
+
+    &--farRight {
+      margin-left: auto;
+    }
+  }
+
+  &-text {
+    display: inline-block;
+  }
+
+  &:focus-visible:not(.is-disabled):after,
+  &.custom-focus:not(.is-disabled):after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    width: 100%;
+    height: 100%;
+    border: 2px solid var(--focus);
+    border-radius: 6px;
+    z-index: 1;
+  }
+
+  // ============================
+  // Appearances
+  // ============================
+
+  &--primaryAppearance {
+    @include button-default(--text-04, --interactive-01);
+    @include button-active(--text-04, --active-primary);
+    @include button-hover(--text-04, --hover-primary);
+    @include button-selected(--text-04, --interactive-01);
+  }
+
+  &--secondaryAppearance {
+    @include button-default(--text-02, --interactive-02);
+    @include button-active(--text-02, --active-secondary);
+    @include button-hover(--text-02, --hover-secondary);
+    @include button-selected(--text-04, --interactive-01);
+  }
+
+  &--plainDefaultAppearance {
+    @include button-default(--text-secondary, --interactive-03, --icon-02);
+    @include button-active(--active-primary, --interactive-03);
+    @include button-hover(--hover-primary, --interactive-03);
+    @include button-selected(--text-04, --interactive-01);
+  }
+
+  // ============================
+  // Display Variants
+  // ============================
+
+  &--blockDisplay {
+    width: 100% !important;
+  }
+
+  &--inlineDisplay {
+    width: max-content;
+  }
+
+  // ============================
+  // Text Alignment
+  // ============================
+
+  &--withText {
+    &.Button--leftTextAlign {
+      justify-content: flex-start;
+      text-align: left;
+    }
+
+    &.Button--rightTextAlign {
+      justify-content: flex-end;
+      text-align: right;
+    }
+
+    &.Button--centerTextAlign {
+      justify-content: center;
+      text-align: center;
+    }
+  }
+
+  // ============================
+  // Sizes
+  // ============================
+
+  &--largeSize {
+    font-size: 16px;
+    height: 48px;
+
+    &.Button--plainDefaultAppearance {
+      height: 40px;
+      padding: 0 16px;
+    }
+
+    &.Button--withText:not(.Button--plainDefaultAppearance) {
+      padding: 0 24px;
+    }
+
+    &.Button--withText {
+      @include size-icon-spacing(--spacing-8px, --spacing-8px);
+    }
+
+    &:not(.Button--withText) {
+      min-width: 48px;
+    }
+  }
+
+  &--mediumSize {
+    font-size: 14px;
+    min-height: 40px;
+
+    &.Button--withText {
+      padding: 0 16px;
+      @include size-icon-spacing(--spacing-8px, --spacing-8px);
+    }
+
+    &:not(.Button--withText) {
+      min-width: 40px;
+    }
+  }
+
+  &--smallSize {
+    font-size: 14px;
+    height: 24px;
+
+    .Button-icon {
+      position: relative;
+      top: -1px;
+    }
+
+    &.Button--withText {
+      padding: 0 8px;
+      @include size-icon-spacing(--spacing-4px, --spacing-4px);
+    }
+
+    &:not(.Button--withText) {
+      min-width: 24px;
+    }
+  }
+
+  &--xlargeSize {
+    font-size: 20px;
+    height: 48px;
+
+    &.Button--withText {
+      padding: 0 24px;
+      @include size-icon-spacing(--spacing-8px, --spacing-8px);
+    }
+
+    &:not(.Button--withText) {
+      min-width: 48px;
+    }
+  }
+
+  // ============================
+  // States
+  // ============================
+
+  &.is-disabled {
+    pointer-events: none;
+    color: var(--disabled-02);
+    cursor: not-allowed;
+
+    &:not(.Button--plainDefaultAppearance) {
+      background-color: var(--disabled-01);
+    }
+  }
+
+  &.is-hidden {
+    display: none;
+  }
+
+  &.has-error {
+    border: 1px solid var(--error-01);
+  }
+}

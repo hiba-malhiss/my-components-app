@@ -1,0 +1,269 @@
+:root {
+    font-family: var(--font-stack);
+    --ui-background: #f5f6f7;
+    --ui-01: #ffffff;
+    --ui-01-rgb: 255, 255, 255;
+    --ui-02: #dfe2e6;
+    --ui-03: #bcc3cc;
+    --ui-04: #132d4d;
+    --ui-04-rgb: 19, 45, 77;
+    --interactive-01: #00a3e0;
+    --interactive-02: #e8ebed;
+    --interactive-03: Transparent;
+    --danger-01: #eb0045;
+    --danger-02: #eb0045;
+    --text-01: #132d4d;
+    --text-02: #596c82;
+    --text-03: #8996a6;
+    --text-04: #ffffff;
+    --text-secondary: #344054;
+    --link-01: #00a3e0;
+    --icon-01: #132d4d;
+    --icon-02: #596c82;
+    --icon-03: #8996a6;
+    --icon-04: #ffffff;
+    --field-01: #ffffff;
+    --field-02: #f0ab2d;
+    --field-03: #ffa400;
+    --error-01: #eb0045;
+    --error-02: #eb0045;
+    --error-03: #eb0045;
+    --error-04: rgba(235, 0, 69, 0.05);
+    --success-01: #3bd4ae;
+    --success-02: #3bd4ae;
+    --success-03: #3bd4ae;
+    --success-04: rgba(59, 212, 174, 0.1);
+    --warning-01: #ffa400;
+    --warning-02: #ffa400;
+    --warning-03: #ffa400;
+    --warning-04: rgba(255, 164, 0, 0.1);
+    --information-01: #00a3e0;
+    --information-02: #00a3e0;
+    --information-03: #00a3e0;
+    --information-04: rgba(0, 163, 224, 0.1);
+    --overlay-01: rgba(19, 45, 77, 0.7);
+    --focus: #00a3e0;
+    --hover-primary: #1aace3;
+    --hover-secondary: #dfe2e6;
+    --hover-tertiary: Transparent;
+    --hover-danger: #eb0045;
+    --hover-link: #00a3e0;
+    --hover-item: rgba(0, 163, 224, 0.1);
+    --hover-selected-item: rgba(0, 163, 224, 0.15);
+    --active-primary: #009ad4;
+    --active-secondary: #e8ebed;
+    --active-tertiary: Transparent;
+    --active-danger: #eb0045;
+    --selected-item: rgba(0, 163, 224, 0.2);
+    --table-header: #ccedf9;
+    --skeleton-01: #f5f6f7;
+    --skeleton-02: #ced3d9;
+    --disabled-01: #eef0f2;
+    --disabled-02: #bcc3cc;
+
+    /* font */
+    --font-stack: "Inter", -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI',
+    'Roboto', 'Helvetica Neue', Arial, sans-serif;
+
+    /* spacing */
+    --spacing-4px: 4px;
+    --spacing-8px: 8px;
+    --spacing-12px: 12px;
+    --spacing-16px: 16px;
+    --spacing-24px: 24px;
+    --spacing-32px: 32px;
+    --spacing-40px: 40px;
+    --spacing-64px: 64px;
+
+    /*transaction*/
+    --transition-fast: 0.2s;
+}
+
+/* reset */
+
+/*
+ * https://github.com/jtrost/Complete-CSS-Reset
+*/
+
+/* Displays for HTML 5 */
+article,
+aside,
+audio,
+command,
+datagrid,
+details,
+dialog,
+embed,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section,
+summary,
+video,
+wbr {
+    display: block;
+}
+
+bdi,
+figcaption,
+keygen,
+mark,
+meter,
+progress,
+rp,
+rt,
+ruby,
+time {
+    display: inline;
+}
+
+/* Deprecated tags */
+acronym,
+applet,
+big,
+center,
+dir,
+font,
+frame,
+frameset,
+noframes,
+s,
+strike,
+tt,
+u,
+xmp {
+    display: none;
+}
+
+/* Reset styles for all structural tags */
+a,
+abbr,
+area,
+article,
+aside,
+audio,
+b,
+bdo,
+blockquote,
+body,
+button,
+canvas,
+caption,
+cite,
+code,
+col,
+colgroup,
+command,
+datalist,
+dd,
+del,
+details,
+dialog,
+dfn,
+div,
+dl,
+dt,
+em,
+embed,
+fieldset,
+figure,
+form,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+head,
+header,
+hgroup,
+hr,
+html,
+i,
+iframe,
+img,
+input,
+ins,
+keygen,
+kbd,
+label,
+legend,
+li,
+map,
+mark,
+menu,
+meter,
+nav,
+noscript,
+object,
+ol,
+optgroup,
+option,
+output,
+p,
+param,
+pre,
+progress,
+q,
+rp,
+rt,
+ruby,
+samp,
+section,
+select,
+small,
+span,
+strong,
+sub,
+sup,
+table,
+tbody,
+td,
+textarea,
+tfoot,
+th,
+thead,
+time,
+tr,
+ul,
+var,
+video {
+    background: transparent;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    margin: 0;
+    outline: none;
+    padding: 0;
+    text-decoration: none;
+    vertical-align: baseline;
+}
+
+/* Overrides */
+
+*:focus-visible {
+    outline: none;
+}
+
+body {
+    line-height: 1;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    -moz-font-feature-settings: 'cv01' on, 'cv02' on, 'cv03' on, 'cv04' on;
+    -webkit-font-feature-settings: 'cv01' on, 'cv02' on, 'cv03' on, 'cv04' on;
+    font-feature-settings: 'cv01' on, 'cv02' on, 'cv03' on, 'cv04' on;
+}
+
+pre,
+code,
+tt {
+    font-family: 'Andale Mono', 'Lucida Console', monospace;
+}
+
+pre {
+    white-space: pre;
+}
