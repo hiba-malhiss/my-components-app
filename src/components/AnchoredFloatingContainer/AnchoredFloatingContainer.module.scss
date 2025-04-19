@@ -1,13 +1,16 @@
 .AnchoredFloatingContainer {
   position: absolute;
   top: 100%;
-  display: none;
   min-width: 200px;
   margin-top: 8px;
-
   background-color: var(--ui-01);
   border-radius: 8px;
   box-shadow: 0 4px 8px 0 rgba(var(--ui-04-rgb), 0.12);
+  transform-origin: top;
+  transition: opacity 150ms ease, transform 150ms ease;
+  opacity: 0;
+  transform: scale(0.95);
+  pointer-events: none;
 
   &--fullWidth {
     width: 100%;
@@ -23,7 +26,9 @@
   }
 
   &.is-visible {
-    display: block;
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
     z-index: 99999;
   }
 }
