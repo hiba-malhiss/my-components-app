@@ -16,6 +16,7 @@ const App = () => {
         size="small"
         typeView="date"
         disableFutureDates={true}
+        minDate={moment({year: 2023, month: 5, day: 5})}
       />
       <Calendar
         value={selectedYear}

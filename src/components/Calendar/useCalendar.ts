@@ -30,7 +30,6 @@ export const useCalendar = ({
 
   const [currentView, setCurrentView] = useState<CalendarTypeView>(typeView);
   const [visibleDate, setVisibleDate] = useState<Moment>(value?.clone() || today);
-  const [selectedDate, setSelectedDate] = useState<Moment>(value?.clone());
   const [isOverlayVisible, setOverlayVisible] = useState(false);
   const [decadeBaseYear, setDecadeBaseYear] = useState<number>(today.year());
   const [yearsList, setYearsList] = useState<number[]>([]);
@@ -43,20 +42,8 @@ export const useCalendar = ({
   useEffect(() => {
     if (value) {
       setVisibleDate(value.clone());
-      setSelectedDate(value.clone());
     }
   }, [value]);
-
-  useEffect(() => {
-    // make sure the selected date is within boundaries
-    clampToBounds(visibleDate)
-  }, [visibleDate]);
-
-  const clampToBounds = (date: Moment): Moment => {
-    if (minDate && date.isBefore(minDate)) setVisibleDate(minDate.clone());
-    if (maxDate && date.isAfter(maxDate)) setVisibleDate(maxDate.clone());
-    if (disableFutureDates && date.isAfter(today)) setVisibleDate(today.clone());
-  };
 
   const month = useMemo(() => {
     return createMonth(visibleDate.month(), visibleDate.year());
@@ -76,29 +63,37 @@ export const useCalendar = ({
     }
   };
 
+  // jump to next/prev valid date
+  const clampToBounds = (date: Moment): Moment => {
+    if (minDate && date.isBefore(minDate)) return minDate.clone();
+    if (maxDate && date.isAfter(maxDate)) return maxDate.clone();
+    if (disableFutureDates && date.isAfter(today)) return today.clone();
+    return date;
+  };
+
   const onPrev = () => {
     if (currentView === 'month') {
       const newDate = visibleDate.clone().subtract(1, 'year');
-      setVisibleDate(newDate);
+      setVisibleDate(clampToBounds(newDate));
       setDecadeBaseYear((prev) => prev - 1);
     } else if (currentView === 'year') {
       setDecadeBaseYear((prev) => prev - 10);
     } else {
       const newDate = visibleDate.clone().subtract(1, 'month');
-      setVisibleDate(newDate);
+      setVisibleDate(clampToBounds(newDate));
     }
   };
 
   const onNext = () => {
     if (currentView === 'month') {
       const newDate = visibleDate.clone().add(1, 'year');
-      setVisibleDate(newDate);
+      setVisibleDate(clampToBounds(newDate));
       setDecadeBaseYear((prev) => prev + 1);
     } else if (currentView === 'year') {
       setDecadeBaseYear((prev) => prev + 10);
     } else {
       const newDate = visibleDate.clone().add(1, 'month');
-      setVisibleDate(newDate);
+      setVisibleDate(clampToBounds(newDate));
     }
   };
 
@@ -181,7 +176,6 @@ export const useCalendar = ({
   const onYearSelect = (year: number) => {
     const updated = visibleDate.clone().year(year);
     setVisibleDate(updated);
-    setSelectedDate(updated);
 
     if (typeView === 'month' || typeView === 'date') {
       setCurrentView('month');
@@ -194,7 +188,6 @@ export const useCalendar = ({
   const onMonthSelect = (monthIdx: number) => {
     const updated = visibleDate.clone().month(monthIdx);
     setVisibleDate(updated);
-    setSelectedDate(updated);
 
     if (typeView === 'month') {
       onChange(updated);
@@ -232,7 +225,6 @@ export const useCalendar = ({
     onYearSelect,
     onMonthSelect,
     onDateSelect,
-    isPrevDisabled,
-    selectedDate
+    isPrevDisabled
   };
 };

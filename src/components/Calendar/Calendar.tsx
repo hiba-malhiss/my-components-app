@@ -18,6 +18,8 @@ interface CalendarProps {
   disableFutureDates?: boolean;
   typeView?: CalendarTypeView;
   value: Moment;
+  minDate?: Moment;
+  maxDate?: Moment;
   onChange: (value: Moment) => void;
   dateFormat?: string;
 }
@@ -28,7 +30,9 @@ const Calendar = ({
   typeView = 'date',
   value,
   onChange,
-  dateFormat = DEFAULT_DATE_FORMAT
+  dateFormat = DEFAULT_DATE_FORMAT,
+  minDate,
+  maxDate,
 }: CalendarProps) => {
   const {
     shortMonthNames,
@@ -45,6 +49,7 @@ const Calendar = ({
     onNext,
     getCalendarLabel,
     isNextDisabled,
+    isPrevDisabled,
     isYearDisabled,
     isMonthDisabled,
     isDateDisabled,
@@ -57,7 +62,9 @@ const Calendar = ({
     typeView,
     dateFormat,
     disableFutureDates,
-    onChange
+    onChange,
+    minDate,
+    maxDate,
   });
 
   return (
@@ -70,8 +77,13 @@ const Calendar = ({
         onVisibilityUpdate={onDropdownToggle}
       >
         <div className={styles['Calendar-header']}>
-          <Button iconLeft={faChevronLeft} appearance="plainDefault" onClick={onPrev}
-                  className={styles['left-chevron']}/>
+          <Button
+            iconLeft={faChevronLeft}
+            appearance="plainDefault"
+            isDisabled={isPrevDisabled()}
+            onClick={onPrev}
+            className={styles['left-chevron']}
+          />
           {currentView === 'year' && (
             <div className={styles["decade-range"]}>{yearsList[0]} – {yearsList[yearsList.length - 1]}</div>
           )}
