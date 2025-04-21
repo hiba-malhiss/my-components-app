@@ -15,6 +15,7 @@ type CalendarTypeView = 'month' | 'year' | 'date';
 
 interface CalendarProps {
   size?: 'small' | 'large';
+  selectionMode?: 'multiple' | 'range';
   disableFutureDates?: boolean;
   typeView?: CalendarTypeView;
   value: Moment;

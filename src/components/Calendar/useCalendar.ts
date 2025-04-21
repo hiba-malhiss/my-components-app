@@ -45,6 +45,17 @@ export const useCalendar = ({
     }
   }, [value]);
 
+  useEffect(() => {
+    // make sure the selected date is within boundaries
+    clampToBounds(visibleDate)
+  }, [visibleDate]);
+
+  const clampToBounds = (date: Moment): Moment => {
+    if (minDate && date.isBefore(minDate)) setVisibleDate( minDate.clone());
+    if (maxDate && date.isAfter(maxDate)) setVisibleDate(maxDate.clone());
+    if (disableFutureDates && date.isAfter(today)) setVisibleDate(today.clone());
+  };
+
   const month = useMemo(() => {
     return createMonth(visibleDate.month(), visibleDate.year());
   }, [visibleDate.month(), visibleDate.year()]);
@@ -63,37 +74,29 @@ export const useCalendar = ({
     }
   };
 
-  // jump to next/prev valid date
-  const clampToBounds = (date: Moment): Moment => {
-    if (minDate && date.isBefore(minDate)) return minDate.clone();
-    if (maxDate && date.isAfter(maxDate)) return maxDate.clone();
-    if (disableFutureDates && date.isAfter(today)) return today.clone();
-    return date;
-  };
-
   const onPrev = () => {
     if (currentView === 'month') {
       const newDate = visibleDate.clone().subtract(1, 'year');
-      setVisibleDate(clampToBounds(newDate));
+      setVisibleDate(newDate);
       setDecadeBaseYear((prev) => prev - 1);
     } else if (currentView === 'year') {
       setDecadeBaseYear((prev) => prev - 10);
     } else {
       const newDate = visibleDate.clone().subtract(1, 'month');
-      setVisibleDate(clampToBounds(newDate));
+      setVisibleDate(newDate);
     }
   };
 
   const onNext = () => {
     if (currentView === 'month') {
       const newDate = visibleDate.clone().add(1, 'year');
-      setVisibleDate(clampToBounds(newDate));
+      setVisibleDate(newDate);
       setDecadeBaseYear((prev) => prev + 1);
     } else if (currentView === 'year') {
       setDecadeBaseYear((prev) => prev + 10);
     } else {
       const newDate = visibleDate.clone().add(1, 'month');
-      setVisibleDate(clampToBounds(newDate));
+      setVisibleDate(newDate);
     }
   };
 
