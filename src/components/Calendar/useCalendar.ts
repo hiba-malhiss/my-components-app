@@ -1,15 +1,16 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import moment, { Moment } from 'moment';
 import { createMonth, DayInfo } from './calendar.utils';
 
 type CalendarTypeView = 'month' | 'year' | 'date';
 
 interface UseCalendarProps {
-  value: Moment;
+  value: Moment | Moment[];
   typeView?: CalendarTypeView;
+  selectionMode?: 'single' | 'multiple';
   dateFormat?: string;
   disableFutureDates?: boolean;
-  onChange: (value: Moment) => void;
+  onChange: (value: Moment | Moment[]) => void;
   minDate?: Moment;
   maxDate?: Moment;
 }
@@ -19,6 +20,7 @@ export const useCalendar = ({
   typeView,
   dateFormat,
   disableFutureDates,
+  selectionMode = 'single',
   onChange,
   minDate,
   maxDate,
@@ -29,8 +31,8 @@ export const useCalendar = ({
   const weekDays = moment.weekdaysShort();
 
   const [currentView, setCurrentView] = useState<CalendarTypeView>(typeView);
-  const [visibleDate, setVisibleDate] = useState<Moment>(value?.clone() || today);
-  const [selectedDate, setSelectedDate] = useState<Moment>(value?.clone());
+  const [visibleDate, setVisibleDate] = useState<Moment>(today);
+  const [selectedDates, setSelectedDates] = useState<Moment[]>([]);
   const [isOverlayVisible, setOverlayVisible] = useState(false);
   const [decadeBaseYear, setDecadeBaseYear] = useState<number>(today.year());
   const [yearsList, setYearsList] = useState<number[]>([]);
@@ -41,116 +43,125 @@ export const useCalendar = ({
   }, [decadeBaseYear]);
 
   useEffect(() => {
-    if (value) {
-      setVisibleDate(value.clone());
-      setSelectedDate(value.clone());
+    if (selectionMode === 'single') {
+      if (moment.isMoment(value)) {
+        if (selectedDates[0]?.isSame(value)) return;
+        setVisibleDate(value.clone());
+        setSelectedDates([value.clone()]);
+      } else {
+        setVisibleDate(today.clone());
+        setSelectedDates([]);
+      }
+    } else {
+      if (Array.isArray(value) && value.length) {
+        if (value.every(d => selectedDates.some(s => d.isSame(s)))) return;
+        setVisibleDate(value[value.length - 1].clone());
+        setSelectedDates(value.map(v => v.clone()));
+      } else {
+        setVisibleDate(today.clone());
+        setSelectedDates([]);
+      }
     }
-  }, [value]);
+  }, [value, selectionMode]);
 
   const month = useMemo(() => {
+    if (!visibleDate) return null;
     return createMonth(visibleDate.month(), visibleDate.year());
   }, [visibleDate.month(), visibleDate.year()]);
 
   const getCalendarLabel = () => {
-    if (typeView === 'date') return value ? value.format(dateFormat) : dateFormat;
-    if (typeView === 'year') return value ? String(value.year()) : 'YYYY';
-    return value ? `${fullMonthNames[value.month()]} ${value.year()}` : 'MM YYYY';
+    if (!value || (Array.isArray(value) && value.length === 0)) {
+      if (typeView === 'year') return 'YYYY';
+      if (typeView === 'date') return dateFormat || 'DD/MM/YYYY';
+      return 'MM YYYY';
+    }
+
+    const formatValue = (val: Moment) => {
+      if (typeView === 'date') return val.format(dateFormat);
+      if (typeView === 'year') return String(val.year());
+      return `${fullMonthNames[val.month()]} ${val.year()}`;
+    };
+
+    return Array.isArray(value)
+      ? value.map(formatValue).join(', ')
+      : formatValue(value);
   };
 
   const onDropdownToggle = (visible?: boolean) => {
-    const toggle = visible !== undefined ? visible : !isOverlayVisible;
+    const toggle = visible ?? !isOverlayVisible;
     setOverlayVisible(toggle);
-    if (!toggle) {
-      setCurrentView(typeView);
-    }
+    if (!toggle) setCurrentView(typeView);
+  };
+
+  const moveVisibleDate = (unit: 'year' | 'month', amount: number) => {
+    setVisibleDate(prev => prev.clone().add(amount, unit));
   };
 
   const onPrev = () => {
-    if (currentView === 'month') {
-      const newDate = visibleDate.clone().subtract(1, 'year');
-      setVisibleDate(newDate);
-      setDecadeBaseYear((prev) => prev - 1);
-    } else if (currentView === 'year') {
-      setDecadeBaseYear((prev) => prev - 10);
+    if (currentView === 'year') {
+      setDecadeBaseYear(prev => prev - 10);
+    } else if (currentView === 'month') {
+      moveVisibleDate('year', -1);
     } else {
-      const newDate = visibleDate.clone().subtract(1, 'month');
-      setVisibleDate(newDate);
+      moveVisibleDate('month', -1);
     }
   };
 
   const onNext = () => {
-    if (currentView === 'month') {
-      const newDate = visibleDate.clone().add(1, 'year');
-      setVisibleDate(newDate);
-      setDecadeBaseYear((prev) => prev + 1);
-    } else if (currentView === 'year') {
-      setDecadeBaseYear((prev) => prev + 10);
+    if (currentView === 'year') {
+      setDecadeBaseYear(prev => prev + 10);
+    } else if (currentView === 'month') {
+      moveVisibleDate('year', 1);
     } else {
-      const newDate = visibleDate.clone().add(1, 'month');
-      setVisibleDate(newDate);
+      moveVisibleDate('month', 1);
     }
   };
 
-  const isNextDisabled = (): boolean => {
-    const nextVisibleDate = visibleDate.clone();
+  const isNavigationDisabled = (direction: 'prev' | 'next') => {
+    if (!visibleDate) return true;
+    const compareDate = visibleDate.clone();
+    const offset = direction === 'next' ? 1 : -1;
 
     if (currentView === 'year') {
-      const lastYear = yearsList[yearsList.length - 1];
-      if (disableFutureDates && lastYear >= today.year()) return true;
-      if (maxDate && lastYear >= maxDate.year()) return true;
+      const year = direction === 'next' ? yearsList[yearsList.length - 1] : yearsList[0];
+      if (disableFutureDates && year >= today.year()) return true;
+      if (maxDate && direction === 'next' && year >= maxDate.year()) return true;
+      if (minDate && direction === 'prev' && year <= minDate.year()) return true;
     }
 
     if (currentView === 'month') {
-      if (disableFutureDates && nextVisibleDate.year() >= today.year()) return true;
-      if (maxDate && nextVisibleDate.year() >= maxDate.year()) return true;
+      compareDate.add(offset, 'year');
+      if (disableFutureDates && direction === 'next' && compareDate.year() > today.year()) return true;
+      if (maxDate && direction === 'next' && compareDate.year() > maxDate.year()) return true;
+      if (minDate && direction === 'prev' && compareDate.year() < minDate.year()) return true;
     }
 
     if (currentView === 'date') {
-      if (disableFutureDates && nextVisibleDate.isSameOrAfter(today, 'month')) return true;
-      if (maxDate && nextVisibleDate.isSameOrAfter(maxDate, 'month')) return true;
+      compareDate.add(offset, 'month');
+      if (disableFutureDates && direction === 'next' && compareDate.isAfter(today, 'month')) return true;
+      if (maxDate && direction === 'next' && compareDate.isAfter(maxDate, 'month')) return true;
+      if (minDate && direction === 'prev' && compareDate.isBefore(minDate, 'month')) return true;
     }
 
     return false;
   };
 
-  const isPrevDisabled = (): boolean => {
-    const prevVisibleDate = visibleDate.clone();
-
-    if (currentView === 'year') {
-      const firstYear = yearsList[0];
-      if (minDate && firstYear <= minDate.year()) return true;
-    }
-
-    if (currentView === 'month') {
-      if (minDate && prevVisibleDate.year() <= minDate.year()) return true;
-    }
-
-    if (currentView === 'date') {
-      if (minDate && prevVisibleDate.isSameOrBefore(minDate, 'month')) return true;
-    }
-
-    return false;
-  };
+  const isNextDisabled = () => isNavigationDisabled('next');
+  const isPrevDisabled = () => isNavigationDisabled('prev');
 
   const isYearDisabled = (year: number) => {
-    if (disableFutureDates && year > today.year()) {
-      return true;
-    }
-    if (minDate && year < minDate.year()) {
-      return true;
-    }
+    if (disableFutureDates && year > today.year()) return true;
+    if (minDate && year < minDate.year()) return true;
     return !!(maxDate && year > maxDate.year());
+
   };
 
   const isMonthDisabled = (monthIdx: number) => {
+    if (!visibleDate) return true;
     const year = visibleDate.year();
     const dateToCheck = moment({ year, month: monthIdx });
-    if (disableFutureDates && dateToCheck.isAfter(today, 'month')) {
-      return true;
-    }
-    if (minDate && dateToCheck.isBefore(minDate, 'month')) {
-      return true;
-    }
+    if (disableFutureDates && dateToCheck.isAfter(today, 'month')) return true;
+    if (minDate && dateToCheck.isBefore(minDate, 'month')) return true;
     return !!(maxDate && dateToCheck.isAfter(maxDate, 'month'));
 
   };
@@ -158,46 +169,81 @@ export const useCalendar = ({
   const isDateDisabled = (date: DayInfo) => {
     if (date.isFromOtherMonth) return true;
     const check = moment({ year: date.year, month: date.month, day: date.day });
-    if (disableFutureDates && check.isAfter(today, 'day')) {
-      return true;
-    }
-    if (minDate && check.isBefore(minDate, 'day')) {
-      return true;
-    }
+    if (disableFutureDates && check.isAfter(today, 'day')) return true;
+    if (minDate && check.isBefore(minDate, 'day')) return true;
     return !!(maxDate && check.isAfter(maxDate, 'day'));
+  };
+
+  const updateSelectedDates = (date: Moment) => {
+    let updated = selectedDates.map(v => v.clone());
+    const isSelected = selectedDates.some(d => d.isSame(date));
+
+    if (selectionMode === 'single') {
+      updated = [date];
+    } else if (isSelected) {
+      updated = updated.filter(d => !d.isSame(date));
+    } else {
+      updated.push(date.clone());
+    }
+
+    setSelectedDates(updated);
+    onChange(selectionMode === 'single' ? updated[0] : updated);
+
+    if (selectionMode === 'single') {
+      setOverlayVisible(false);
+    }
   };
 
   const onYearSelect = (year: number) => {
     const updated = visibleDate.clone().year(year);
     setVisibleDate(updated);
-    setSelectedDate(updated);
 
     if (typeView === 'month' || typeView === 'date') {
       setCurrentView('month');
     } else {
-      onChange(updated);
-      setOverlayVisible(false);
+      updateSelectedDates(updated);
     }
   };
 
   const onMonthSelect = (monthIdx: number) => {
     const updated = visibleDate.clone().month(monthIdx);
     setVisibleDate(updated);
-    setSelectedDate(updated);
 
     if (typeView === 'month') {
-      onChange(updated);
-      setOverlayVisible(false);
+      updateSelectedDates(updated);
     } else {
       setCurrentView('date');
     }
   };
 
-  const onDateSelect = useCallback((date: DayInfo) => {
-    const selected = moment({ year: date.year, month: date.month, day: date.day });
-    onChange(selected);
-    setOverlayVisible(false);
-  }, [onChange]);
+  const onDateSelect = (date: DayInfo) => {
+    const selectedMoment = moment({ year: date.year, month: date.month, day: date.day });
+    updateSelectedDates(selectedMoment);
+  };
+
+  const isDateSelected = (date: DayInfo) => {
+    return selectedDates.some(d =>
+      d.date() === date.day &&
+      d.month() === date.month &&
+      d.year() === date.year
+    );
+  };
+
+  const isYearSelected = (year: number) => {
+    if (selectionMode === "single" || typeView == "year") {
+      return selectedDates.some(d => d.year() === year);
+    }
+    return false;
+  };
+
+  const isMonthSelected = (monthIdx: number) => {
+    if (selectionMode === "single" || typeView == "month") {
+      return selectedDates.some(d =>
+        d.month() === monthIdx && d.year() === visibleDate.year()
+      );
+    }
+    return false;
+  };
 
   return {
     shortMonthNames,
@@ -215,13 +261,16 @@ export const useCalendar = ({
     onNext,
     getCalendarLabel,
     isNextDisabled,
+    isPrevDisabled,
     isYearDisabled,
     isMonthDisabled,
     isDateDisabled,
     onYearSelect,
     onMonthSelect,
     onDateSelect,
-    selectedDate,
-    isPrevDisabled
+    selectedDates,
+    isDateSelected,
+    isYearSelected,
+    isMonthSelected,
   };
 };

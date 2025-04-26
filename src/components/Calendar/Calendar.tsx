@@ -15,13 +15,13 @@ type CalendarTypeView = 'month' | 'year' | 'date';
 
 interface CalendarProps {
   size?: 'small' | 'large';
-  selectionMode?: 'multiple' | 'range';
+  selectionMode?: 'single' | 'multiple'
   disableFutureDates?: boolean;
   typeView?: CalendarTypeView;
-  value: Moment;
+  value: Moment | Moment[];
   minDate?: Moment;
   maxDate?: Moment;
-  onChange: (value: Moment) => void;
+  onChange: (value: Moment | Moment[]) => void;
   dateFormat?: string;
 }
 
@@ -34,6 +34,7 @@ const Calendar = ({
   dateFormat = DEFAULT_DATE_FORMAT,
   minDate,
   maxDate,
+  selectionMode
 }: CalendarProps) => {
   const {
     shortMonthNames,
@@ -57,7 +58,10 @@ const Calendar = ({
     onYearSelect,
     onMonthSelect,
     onDateSelect,
-    selectedDate
+    isYearSelected,
+    isDateSelected,
+    setOverlayVisible,
+    isMonthSelected
   } = useCalendar({
     value,
     typeView,
@@ -66,16 +70,20 @@ const Calendar = ({
     onChange,
     minDate,
     maxDate,
+    selectionMode
   });
 
   return (
     <div className={styles.Calendar}>
-      <Button size={size} onClick={() => onDropdownToggle()}>
+      <Button size={size} onClick={(event) => {
+        onDropdownToggle();
+        event.stopPropagation();
+      }}>
         {getCalendarLabel()}
       </Button>
       <AnchoredFloatingContainer
         isVisible={isOverlayVisible}
-        onVisibilityUpdate={onDropdownToggle}
+        onVisibilityChange={setOverlayVisible}
       >
         <div className={styles['Calendar-header']}>
           <Button
@@ -89,13 +97,19 @@ const Calendar = ({
             <div className={styles["decade-range"]}>{yearsList[0]} – {yearsList[yearsList.length - 1]}</div>
           )}
           {currentView === 'date' && (
-            <Button appearance="plainDefault" size="large" display="inline" onClick={() => setCurrentView('month')}>
-              {fullMonthNames[visibleDate.month()]}
+            <Button appearance="plainDefault" size="large" display="inline" onClick={(e) => {
+              setCurrentView('month');
+              e.stopPropagation();
+            }}>
+              {visibleDate ? fullMonthNames[visibleDate.month()] : ''}
             </Button>
           )}
           {(currentView === 'month' || currentView === 'date') && (
-            <Button appearance="plainDefault" size="large" onClick={() => setCurrentView('year')}>
-              {visibleDate.year()}
+            <Button appearance="plainDefault" size="large" onClick={(e) => {
+              setCurrentView('year');
+              e.stopPropagation();
+            }}>
+              {visibleDate?.year()}
             </Button>
           )}
           <Button
@@ -113,7 +127,7 @@ const Calendar = ({
               <CalendarButton
                 key={year}
                 isDisabled={isYearDisabled(year)}
-                isSelected={selectedDate?.year() === year}
+                isSelected={isYearSelected(year)}
                 onClick={() => onYearSelect(year)}
               >
                 {year}
@@ -128,7 +142,7 @@ const Calendar = ({
               <CalendarButton
                 key={monthName}
                 isDisabled={isMonthDisabled(i)}
-                isSelected={selectedDate?.month() === i && selectedDate?.year() === visibleDate.year()}
+                isSelected={isMonthSelected(i)}
                 onClick={() => onMonthSelect(i)}
               >
                 {monthName}
@@ -142,17 +156,13 @@ const Calendar = ({
             {weekDays.map((day) => (
               <span key={day} className={styles["days"]}>{day}</span>
             ))}
-            {month.dates.map((week, i) => (
+            {month?.dates?.map((week, i) => (
               <React.Fragment key={i}>
                 {week.map((date) => (
                   <CalendarButton
                     key={date.day}
                     isDisabled={isDateDisabled(date)}
-                    isSelected={
-                      selectedDate?.date() === date.day &&
-                      selectedDate?.month() === date.month &&
-                      selectedDate?.year() === date.year
-                    }
+                    isSelected={isDateSelected(date)}
                     isRounded
                     isHighlighted={date.today}
                     onClick={() => onDateSelect(date)}
