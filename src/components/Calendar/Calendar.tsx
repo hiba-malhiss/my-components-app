@@ -146,7 +146,7 @@ const Calendar = ({
               <React.Fragment key={i}>
                 {week.map((date) => (
                   <CalendarButton
-                    key={date.formattedDate}
+                    key={date.day}
                     isDisabled={isDateDisabled(date)}
                     isSelected={
                       selectedDate?.date() === date.day &&

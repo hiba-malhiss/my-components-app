@@ -30,6 +30,7 @@ export const useCalendar = ({
 
   const [currentView, setCurrentView] = useState<CalendarTypeView>(typeView);
   const [visibleDate, setVisibleDate] = useState<Moment>(value?.clone() || today);
+  const [selectedDate, setSelectedDate] = useState<Moment>(value?.clone());
   const [isOverlayVisible, setOverlayVisible] = useState(false);
   const [decadeBaseYear, setDecadeBaseYear] = useState<number>(today.year());
   const [yearsList, setYearsList] = useState<number[]>([]);
@@ -42,6 +43,7 @@ export const useCalendar = ({
   useEffect(() => {
     if (value) {
       setVisibleDate(value.clone());
+      setSelectedDate(value.clone());
     }
   }, [value]);
 
@@ -168,6 +170,7 @@ export const useCalendar = ({
   const onYearSelect = (year: number) => {
     const updated = visibleDate.clone().year(year);
     setVisibleDate(updated);
+    setSelectedDate(updated);
 
     if (typeView === 'month' || typeView === 'date') {
       setCurrentView('month');
@@ -180,6 +183,7 @@ export const useCalendar = ({
   const onMonthSelect = (monthIdx: number) => {
     const updated = visibleDate.clone().month(monthIdx);
     setVisibleDate(updated);
+    setSelectedDate(updated);
 
     if (typeView === 'month') {
       onChange(updated);
@@ -217,6 +221,7 @@ export const useCalendar = ({
     onYearSelect,
     onMonthSelect,
     onDateSelect,
+    selectedDate,
     isPrevDisabled
   };
 };
