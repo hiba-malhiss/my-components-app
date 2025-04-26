@@ -45,17 +45,6 @@ export const useCalendar = ({
     }
   }, [value]);
 
-  useEffect(() => {
-    // make sure the selected date is within boundaries
-    clampToBounds(visibleDate)
-  }, [visibleDate]);
-
-  const clampToBounds = (date: Moment): Moment => {
-    if (minDate && date.isBefore(minDate)) setVisibleDate( minDate.clone());
-    if (maxDate && date.isAfter(maxDate)) setVisibleDate(maxDate.clone());
-    if (disableFutureDates && date.isAfter(today)) setVisibleDate(today.clone());
-  };
-
   const month = useMemo(() => {
     return createMonth(visibleDate.month(), visibleDate.year());
   }, [visibleDate.month(), visibleDate.year()]);
