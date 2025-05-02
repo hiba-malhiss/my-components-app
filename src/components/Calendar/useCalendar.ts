@@ -7,7 +7,7 @@ import { getSelectionStatus } from "./utils/getSelectionStatus";
 interface UseCalendarProps {
   value: Moment | Moment[];
   typeView?: CalendarTypeView;
-  selectionMode?: 'single' | 'multiple' | 'range';
+  selectionMode?: SelectionMode;
   dateFormat?: string;
   disableFutureDates?: boolean;
   onChange: (value: Moment | Moment[]) => void;

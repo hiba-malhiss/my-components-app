@@ -14,7 +14,7 @@ import { CalendarTypeView } from "./calendarTypes";
 
 interface CalendarProps {
   size?: 'small' | 'large';
-  selectionMode?: 'single' | 'multiple'
+  selectionMode?: SelectionMode;
   disableFutureDates?: boolean;
   typeView?: CalendarTypeView;
   value: Moment | Moment[];

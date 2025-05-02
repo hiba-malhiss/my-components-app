@@ -81,7 +81,8 @@ const App = () => {
           </label>
         </div>
       </div>
-
+      {Array.isArray(value) ? value.map(v=>v.format('YYYY/MM/DD')).join(','): value?.format('YYYY/MM/DD')}
+      <div></div>
       <Calendar
         value={value}
         onChange={setValue}

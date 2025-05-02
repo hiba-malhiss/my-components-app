@@ -14,3 +14,4 @@ export interface Month {
 }
 
 export type CalendarTypeView = 'month' | 'year' | 'date';
+export type SelectionMode = 'single' | 'multiple' | 'range';

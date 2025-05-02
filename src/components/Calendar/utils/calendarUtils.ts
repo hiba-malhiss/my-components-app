@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { DayInfo, Month } from "./calendarTypes";
+import { DayInfo, Month } from "../calendarTypes";
 
 export const DEFAULT_DATE_FORMAT = 'YYYY/MM/DD';
 
