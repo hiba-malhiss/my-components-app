@@ -8,14 +8,17 @@ import { DEFAULT_DATE_FORMAT } from './utils/calendarUtils';
 
 import styles from './Calendar.module.scss';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faCalendar } from '@fortawesome/free-regular-svg-icons';
 import Button from "../Button/Button";
 import { useCalendar } from "./useCalendar";
 import { CalendarTypeView } from "./calendarTypes";
+import StringInput from "../StringInput/StringInput";
+import clsx from "clsx";
 
 interface CalendarProps {
-  size?: 'small' | 'large';
   selectionMode?: SelectionMode;
   disableFutureDates?: boolean;
+  withFooter?: boolean;
   typeView?: CalendarTypeView;
   value: Moment | Moment[];
   minDate?: Moment;
@@ -25,7 +28,6 @@ interface CalendarProps {
 }
 
 const Calendar = ({
-  size = 'small',
   disableFutureDates = true,
   typeView = 'date',
   value,
@@ -33,7 +35,8 @@ const Calendar = ({
   dateFormat = DEFAULT_DATE_FORMAT,
   minDate,
   maxDate,
-  selectionMode
+  selectionMode,
+  withFooter
 }: CalendarProps) => {
   const {
     month,
@@ -45,7 +48,6 @@ const Calendar = ({
     yearsList,
     isOverlayVisible,
     getCalendarLabel,
-    toggleOverlay,
     goToPrevious,
     goToNext,
     isNextDisabled,
@@ -58,7 +60,9 @@ const Calendar = ({
     onYearSelect,
     setCurrentView,
     setOverlayVisible,
-    getSelectionBtnStatus
+    getSelectionBtnStatus,
+    onInputClick,
+    reset
   } = useCalendar({
     value,
     typeView,
@@ -71,13 +75,15 @@ const Calendar = ({
   });
 
   return (
-    <div className={styles.Calendar}>
-      <Button size={size} onClick={(event) => {
-        toggleOverlay();
-        event.stopPropagation();
-      }}>
-        {getCalendarLabel()}
-      </Button>
+    <div className={clsx(styles.Calendar, { [styles['Calendar-withFooter']]: withFooter })}>
+      <StringInput
+        value={getCalendarLabel()}
+        onIconClick={onInputClick}
+        onClick={onInputClick}
+        placeholder="Select Date"
+        iconRight={faCalendar}
+        readOnly
+      />
       <AnchoredFloatingContainer
         isVisible={isOverlayVisible}
         onVisibilityChange={setOverlayVisible}
@@ -174,6 +180,16 @@ const Calendar = ({
                 ))}
               </React.Fragment>
             ))}
+          </div>
+        )}
+
+        {withFooter && (
+          <div className={styles['Calendar-footer']}>
+            <Button
+              appearance="plainDefault"
+              onClick={reset}>
+              Clear
+            </Button>
           </div>
         )}
       </AnchoredFloatingContainer>

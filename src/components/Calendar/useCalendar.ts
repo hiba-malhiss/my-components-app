@@ -72,13 +72,7 @@ export const useCalendar = ({
     };
 
     if (!value || (Array.isArray(value) && value.length === 0)) {
-      if (typeView === 'year') {
-        return 'YYYY';
-      }
-      if (typeView === 'date') {
-        return dateFormat || 'DD/MM/YYYY';
-      }
-      return 'MM YYYY';
+      return '';
     }
 
     return Array.isArray(value)
@@ -182,7 +176,7 @@ export const useCalendar = ({
     setSelectedDates(updated);
     onChange(selectionMode === 'single' ? updated[0] : updated);
 
-    if (selectionMode === 'single') {
+    if (selectionMode === 'single' || (selectionMode == 'range' && updated.length == 2)) {
       setOverlayVisible(false);
     }
   };
@@ -214,6 +208,20 @@ export const useCalendar = ({
     updateSelectedDates(selectedMoment);
   };
 
+  const onInputClick = (e) => {
+    toggleOverlay();
+    e.stopPropagation();
+  }
+
+  const reset = () => {
+    onChange(null)
+    setVisibleDate(today.clone());
+    setSelectedDates([]);
+    setCurrentView(typeView);
+    setDecadeBaseYear(today.year());
+    setOverlayVisible(false);
+  };
+
   const getSelectionBtnStatus = useCallback((type, value) => {
     return getSelectionStatus(
       typeView,
@@ -235,7 +243,6 @@ export const useCalendar = ({
     yearsList,
     isOverlayVisible,
     getCalendarLabel,
-    toggleOverlay,
     goToPrevious,
     goToNext,
     isNextDisabled,
@@ -248,6 +255,8 @@ export const useCalendar = ({
     onYearSelect,
     setCurrentView,
     setOverlayVisible,
-    getSelectionBtnStatus
+    getSelectionBtnStatus,
+    onInputClick,
+    reset
   };
 };

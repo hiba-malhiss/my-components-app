@@ -43,7 +43,6 @@ const MyComponent = () => {
       disableFutureDates={true}
       minDate={moment().subtract(1, 'year')}
       maxDate={moment().add(1, 'year')}
-      size="large"
     />
   );
 };
@@ -63,7 +62,6 @@ const MyComponent = () => {
 | `minDate`            | `Moment`                            | `undefined`    | Minimum selectable date                   |
 | `maxDate`            | `Moment`                            | `undefined`    | Maximum selectable date                   |
 | `dateFormat`         | `string`                            | `'DD/MM/YYYY'` | Format used for displaying selected dates |
-| `size`               | `'small' , 'large'`                | `'small'`      | Size of the calendar toggle button        |
 
 ---
 

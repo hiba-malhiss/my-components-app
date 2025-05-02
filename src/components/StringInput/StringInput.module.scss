@@ -1,0 +1,132 @@
+@mixin form-input-wrapping-element() {
+  background-color: var(--field-01);
+  border: 1px solid var(--ui-02);
+  border-radius: 4px;
+  box-sizing: border-box;
+  width: 100%;
+  height: 40px;
+  transition: border-color var(--transition-fast) linear,
+  box-shadow, var(--transition-fast) linear, color, var(--transition-fast) linear;
+
+  font-size: 14px;
+  padding-left: var(--spacing-12px);
+  padding-right: var(--spacing-12px);
+
+  cursor: text;
+
+  &:active:not(.is-disabled) {
+    border-color: var(--active-primary);
+    box-shadow: 0 0 0 1px var(--active-primary);
+  }
+
+  &:focus-visible:not(.is-disabled), &:has(:focus-visible:not(.is-disabled)) {
+    border-color: var(--focus);
+    box-shadow: 0 0 0 1px var(--focus);
+  }
+
+  &:not(&:has(:focus-visible)):not(:hover).has-error {
+    border-color: var(--error-01);
+  }
+
+  &:hover:not(.is-disabled) {
+    border-color: var(--hover-primary);
+  }
+
+  &.is-disabled {
+    background-color: var(--disabled-01);
+    border-color: var(--ui-02);
+    cursor: not-allowed;
+  }
+
+  &.is-calculated {
+    background-color: var(--field-02);
+    border-color: var(--field-03);
+    cursor: not-allowed;
+  }
+
+  &.is-valid {
+    background-color: var(--success-04);
+    border-color: var(--success-02);
+  }
+}
+
+.StringInput {
+  width: 100%;
+
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  &-iconLeft, &-iconRight {
+    cursor: pointer;
+    color: var(--icon-03);
+    font-size: 16px;
+  }
+
+  &-wrapper {
+    display: flex;
+    align-items: center;
+    @include form-input-wrapping-element();
+
+    &.is-disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    &.is-calculated {
+      background-color: var(--ui-01);
+    }
+
+    &.has-iconLeft {
+      padding-left: 8px;
+    }
+
+    &.has-iconRight {
+      padding-right: 8px;
+    }
+  }
+
+  &-iconLeft {
+    margin-right: 12px;
+  }
+
+  &-iconRight {
+    margin-left: 12px;
+  }
+
+  &-input {
+    width: 100%;
+    color: var(--text-01);
+    appearance: none;
+    outline: none;
+    line-height: 20px;
+    padding-top: 9px;
+    padding-bottom: 9px;
+    background-color: transparent;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+
+    &.is-disabled {
+      color: var(--disabled-02);
+      cursor: not-allowed;
+    }
+
+    &::placeholder {
+      color: var(--text-03);
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &.is-disabled {
+      cursor: not-allowed;
+    }
+
+    &.is-calculated {
+      background-color: var(--ui-01);
+    }
+  }
+}
