@@ -1,34 +1,37 @@
 # 📅 Calendar Component
 
-A customizable, responsive calendar picker component built with React and Moment.js. Supports multiple views (date/month/year), range selection, min/max constraints, and future date disabling. Designed with accessibility and reusability in mind.
+A flexible, interactive calendar component built with React and `moment.js`, supporting multiple views (date, month, year), selection modes (single/range/multiple), and constraints (min/max dates, disabling future dates).
 
 ---
 
 ## ✨ Features
 
-* View modes: **Date**, **Month**, and **Year**
-* Single, multiple, or range date selection
-* Optional disabling of future dates
-* Constraints with `minDate` and `maxDate`
-* Floating overlay calendar triggered via button
-* Fully styled and responsive
+* **Date, Month, and Year View Switching**
+* **Single, Multiple or Range Date Selection**
+* **Min/Max Date Constraints**
+* **Disable Future Dates Option**
+* **Custom Date Format**
+* **Clear Selection Footer Option**
+* **Floating Anchored Dropdown UI**
+* **Fully Keyboard and Mouse Accessible**
+* **Styled with SCSS Modules**
 
 ---
 
-## 📦 Installation
+## 🚀 Installation
+
+Ensure you have the following dependencies:
 
 ```bash
-npm install moment @fortawesome/react-fontawesome @fortawesome/free-solid-svg-icons
+npm install react moment clsx @fortawesome/react-fontawesome
 ```
-
-*Include or adapt the component’s `.scss` file in your build pipeline.*
 
 ---
 
-## 🧩 Usage
+## 🔧 Usage
 
 ```tsx
-import Calendar from './components/Calendar/Calendar';
+import Calendar from './Calendar';
 import moment from 'moment';
 
 const MyComponent = () => {
@@ -40,9 +43,6 @@ const MyComponent = () => {
       onChange={setSelectedDate}
       typeView="date"
       selectionMode="single"
-      disableFutureDates={true}
-      minDate={moment().subtract(1, 'year')}
-      maxDate={moment().add(1, 'year')}
     />
   );
 };
@@ -50,33 +50,35 @@ const MyComponent = () => {
 
 ---
 
-## ⚙️ Props
+## 📌 Props
 
-| Prop                 | Type                                | Default        | Description                               |
-| -------------------- | ----------------------------------- | -------------- | ----------------------------------------- |
-| `value`              | `Moment , Moment[]`                | **required**   | Selected date(s)                          |
-| `onChange`           | `(value) => void`                   | **required**   | Callback when selection changes           |
-| `typeView`           | `'date' , 'month' , 'year'`       | `'date'`       | Initial calendar view                     |
-| `selectionMode`      | `'single' , 'multiple' , 'range'` | `'single'`     | Selection mode                            |
-| `disableFutureDates` | `boolean`                           | `true`         | Whether to disable future dates           |
-| `minDate`            | `Moment`                            | `undefined`    | Minimum selectable date                   |
-| `maxDate`            | `Moment`                            | `undefined`    | Maximum selectable date                   |
-| `dateFormat`         | `string`                            | `'DD/MM/YYYY'` | Format used for displaying selected dates |
-
----
-
-## 🧠 Internal Architecture
-
-* **`useCalendar` hook**: Centralized state and logic (navigation, view changes, validation, etc.)
-* **`CalendarButton`**: Reusable button with status indicators and styling
-* **`AnchoredFloatingContainer`**: Handles positioning and visibility of the calendar popover
-* **CSS Modules (`.scss`)**: Local styles for layout, responsiveness, and transitions
+| Prop                 | Type                          | Default        | Description                                  |
+| -------------------- | ----------------------------- | -------------- | -------------------------------------------- |
+| `value`              | `Moment , Moment[]`          | **Required**   | Currently selected date(s).                  |
+| `onChange`           | `(value) => void`             | **Required**   | Callback when a date is selected.            |
+| `typeView`           | `'date' , 'month' , 'year'` | `'date'`       | Initial calendar view.                       |
+| `selectionMode`      | `'single' , 'range'`         | `'single'`     | Date selection mode.                         |
+| `disableFutureDates` | `boolean`                     | `true`         | Disable selecting future dates.              |
+| `isDisabled`         | `boolean`                     | `false`        | Disables the input.                          |
+| `isCalculated`       | `boolean`                     | `false`        | Indicates if the value is system-calculated. |
+| `withClearFooter`    | `boolean`                     | `false`        | Displays a footer with a clear button.       |
+| `minDate`            | `Moment`                      | `undefined`    | Minimum date allowed.                        |
+| `maxDate`            | `Moment`                      | `undefined`    | Maximum date allowed.                        |
+| `dateFormat`         | `string`                      | `'DD/MM/YYYY'` | Format to display date labels.               |
 
 ---
 
-## 🧪 Development Notes
+## 🧠 Internal Behavior
 
-* Relies on **Moment.js** for date manipulation.
-* Styles should be imported as CSS Modules (`Calendar.module.scss`).
-* Font Awesome icons (`faChevronLeft`, `faChevronRight`) are used for navigation.
+* Uses a custom hook `useCalendar` to manage state and logic.
+* Handles navigation (prev/next) with constraints.
+* Dynamically switches between views.
+* Renders calendar buttons with appropriate accessibility and layout logic.
 
+---
+
+## 🎨 Styling
+
+Styles are managed via SCSS Modules. The main file is `Calendar.module.scss`, and class names are scoped locally using `clsx`.
+
+---

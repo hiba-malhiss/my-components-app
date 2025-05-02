@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import moment, { Moment } from 'moment';
 import { createMonth } from './utils/calendarUtils';
-import { CalendarTypeView, DayInfo } from "./calendarTypes";
+import { CalendarTypeView, DayInfo, SelectionMode } from "./calendarTypes";
 import { getSelectionStatus } from "./utils/getSelectionStatus";
 
 interface UseCalendarProps {

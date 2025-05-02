@@ -11,7 +11,7 @@ import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons
 import { faCalendar } from '@fortawesome/free-regular-svg-icons';
 import Button from "../Button/Button";
 import { useCalendar } from "./useCalendar";
-import { CalendarTypeView } from "./calendarTypes";
+import { CalendarTypeView, SelectionMode } from "./calendarTypes";
 import StringInput from "../StringInput/StringInput";
 import clsx from "clsx";
 
