@@ -7,7 +7,7 @@ const selectionModes = ['single', 'multiple', 'range'] as const;
 const sizes = ['small', 'medium', 'large'] as const;
 
 const App = () => {
-  const [value, setValue] = useState<moment.Moment | moment.Moment[] | null>(null);
+  const [value, setValue] = useState<moment.Moment | moment.Moment[] | null>(moment());
   const [typeView, setTypeView] = useState<typeof typeViews[number]>('date');
   const [selectionMode, setSelectionMode] = useState<typeof selectionModes[number]>('range');
   const [size, setSize] = useState<typeof sizes[number]>('small');
@@ -87,6 +87,7 @@ const App = () => {
         value={value}
         onChange={setValue}
         typeView={typeView}
+        withClearFooter
         selectionMode={selectionMode}
         size={size}
         disableFutureDates={disableFutureDates}

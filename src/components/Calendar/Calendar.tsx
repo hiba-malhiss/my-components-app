@@ -18,7 +18,9 @@ import clsx from "clsx";
 interface CalendarProps {
   selectionMode?: SelectionMode;
   disableFutureDates?: boolean;
-  withFooter?: boolean;
+  isDisabled?: boolean;
+  isCalculated?: boolean;
+  withClearFooter?: boolean;
   typeView?: CalendarTypeView;
   value: Moment | Moment[];
   minDate?: Moment;
@@ -36,7 +38,9 @@ const Calendar = ({
   minDate,
   maxDate,
   selectionMode,
-  withFooter
+  withClearFooter,
+  isDisabled,
+  isCalculated
 }: CalendarProps) => {
   const {
     month,
@@ -75,7 +79,7 @@ const Calendar = ({
   });
 
   return (
-    <div className={clsx(styles.Calendar, { [styles['Calendar-withFooter']]: withFooter })}>
+    <div className={clsx(styles.Calendar, { [styles['Calendar-withFooter']]: withClearFooter })}>
       <StringInput
         value={getCalendarLabel()}
         onIconClick={onInputClick}
@@ -83,6 +87,8 @@ const Calendar = ({
         placeholder="Select Date"
         iconRight={faCalendar}
         readOnly
+        isDisabled={isDisabled}
+        isCalculated={isCalculated}
       />
       <AnchoredFloatingContainer
         isVisible={isOverlayVisible}
@@ -183,7 +189,7 @@ const Calendar = ({
           </div>
         )}
 
-        {withFooter && (
+        {withClearFooter && (
           <div className={styles['Calendar-footer']}>
             <Button
               appearance="plainDefault"

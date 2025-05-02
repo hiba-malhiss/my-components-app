@@ -43,13 +43,13 @@ export default function StringInput({
               styles['StringInput-iconLeft'],
               onIconClick && styles['clickable']
             )}
-            onClick={onIconClick}
+            onClick={!isDisabled && !isCalculated && onIconClick}
           >
             <FontAwesomeIcon icon={iconLeft} />
           </div>
         )}
         <input
-          onClick={onClick}
+          onClick={!isDisabled && !isCalculated && onClick}
           ref={inputRef}
           className={clsx(
             styles['StringInput-input'],
@@ -70,7 +70,7 @@ export default function StringInput({
               styles['StringInput-iconRight'],
               onIconClick && styles['clickable']
             )}
-            onClick={onIconClick}
+            onClick={!isDisabled && !isCalculated && onIconClick}
           >
             <FontAwesomeIcon icon={iconRight} />
           </div>

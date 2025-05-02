@@ -43,6 +43,11 @@ export const useCalendar = ({
   }, [decadeBaseYear]);
 
   useEffect(() => {
+    if (!currentView || currentView != typeView) reset();
+    setCurrentView(typeView)
+  }, [typeView])
+
+  useEffect(() => {
     if (selectionMode === 'single') {
       if (moment.isMoment(value)) {
         setVisibleDate(value.clone());
