@@ -52,19 +52,20 @@ const MyComponent = () => {
 
 ## 📌 Props
 
-| Prop                 | Type                          | Default        | Description                                  |
-| -------------------- | ----------------------------- | -------------- | -------------------------------------------- |
-| `value`              | `Moment , Moment[]`          | **Required**   | Currently selected date(s).                  |
-| `onChange`           | `(value) => void`             | **Required**   | Callback when a date is selected.            |
-| `typeView`           | `'date' , 'month' , 'year'` | `'date'`       | Initial calendar view.                       |
-| `selectionMode`      | `'single' , 'range'`         | `'single'`     | Date selection mode.                         |
-| `disableFutureDates` | `boolean`                     | `true`         | Disable selecting future dates.              |
-| `isDisabled`         | `boolean`                     | `false`        | Disables the input.                          |
-| `isCalculated`       | `boolean`                     | `false`        | Indicates if the value is system-calculated. |
-| `withClearFooter`    | `boolean`                     | `false`        | Displays a footer with a clear button.       |
-| `minDate`            | `Moment`                      | `undefined`    | Minimum date allowed.                        |
-| `maxDate`            | `Moment`                      | `undefined`    | Maximum date allowed.                        |
-| `dateFormat`         | `string`                      | `'DD/MM/YYYY'` | Format to display date labels.               |
+| Prop                 | Type                                                                                            | Default        | Description                                                                  |
+| -------------------- |-------------------------------------------------------------------------------------------------| -------------- | ---------------------------------------------------------------------------- |
+| `value`              | `Moment , Moment[]`                                                                             | **Required**   | Currently selected date(s).                                                  |
+| `onChange`           | `(value) => void`                                                                               | **Required**   | Callback when a date is selected.                                            |
+| `typeView`           | `'date' , 'month' , 'year'`                                                                     | `'date'`       | Initial calendar view.                                                       |
+| `selectionMode`      | `'single' , 'range'`                                                                            | `'single'`     | Date selection mode.                                                         |
+| `disableFutureDates` | `boolean`                                                                                       | `true`         | Disable selecting future dates.                                              |
+| `isDisabled`         | `boolean`                                                                                       | `false`        | Disables the input.                                                          |
+| `isCalculated`       | `boolean`                                                                                       | `false`        | Indicates if the value is system-calculated.                                 |
+| `withClearFooter`    | `boolean`                                                                                       | `false`        | Displays a footer with a clear button.                                       |
+| `minDate`            | `Moment`                                                                                        | `undefined`    | Minimum date allowed.                                                        |
+| `maxDate`            | `Moment`                                                                                        | `undefined`    | Maximum date allowed.                                                        |
+| `dateFormat`         | `string`                                                                                        | `'DD/MM/YYYY'` | Format to display date labels.                                               |
+| `getCalendarLabel`   | `(value: Moment , Moment[], selectionMode: SelectionMode,typeView: CalendarTypeView) => string` | `undefined`    | Custom function to generate the label shown in the input or calendar header. |
 
 ---
 

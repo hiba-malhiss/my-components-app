@@ -27,6 +27,7 @@ interface CalendarProps {
   maxDate?: Moment;
   onChange: (value: Moment | Moment[]) => void;
   dateFormat?: string;
+  getLabel?: (value: Moment | Moment[], selectionMode: SelectionMode, typeView: CalendarTypeView) => string;
 }
 
 const Calendar = ({
@@ -40,7 +41,8 @@ const Calendar = ({
   selectionMode,
   withClearFooter,
   isDisabled,
-  isCalculated
+  isCalculated,
+  getLabel
 }: CalendarProps) => {
   const {
     month,
@@ -75,7 +77,8 @@ const Calendar = ({
     onChange,
     minDate,
     maxDate,
-    selectionMode
+    selectionMode,
+    getLabel
   });
 
   return (

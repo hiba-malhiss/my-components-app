@@ -13,6 +13,7 @@ interface UseCalendarProps {
   onChange: (value: Moment | Moment[]) => void;
   minDate?: Moment;
   maxDate?: Moment;
+  getLabel?: (value: Moment | Moment[], selectionMode: SelectionMode, typeView: CalendarTypeView) => string;
 }
 
 export const useCalendar = ({
@@ -24,6 +25,7 @@ export const useCalendar = ({
   onChange,
   minDate,
   maxDate,
+  getLabel
 }: UseCalendarProps) => {
   const today = moment();
   const shortMonthNames = moment.monthsShort();
@@ -70,6 +72,9 @@ export const useCalendar = ({
   }, [visibleDate]);
 
   const getCalendarLabel = () => {
+    if (getLabel) {
+      return getLabel(value, selectionMode, typeView);
+    }
     const formatValue = (val: Moment) => {
       if (typeView === 'date') return val.format(dateFormat || 'DD/MM/YYYY');
       if (typeView === 'year') return val.year().toString();
