@@ -33,6 +33,7 @@
     padding: 8px 16px 16px;
     min-width: 280px;
     grid-template-columns: repeat(2, 1fr);
+    row-gap: 2px;
 
     &.Calendar-yearsMenu {
       min-height: 204px;

@@ -4,14 +4,13 @@ import { Moment } from 'moment';
 import AnchoredFloatingContainer from '../AnchoredFloatingContainer/AnchoredFloatingContainer';
 import CalendarButton from './CalendarButton/CalendarButton';
 
-import { DEFAULT_DATE_FORMAT } from './calendar.utils';
+import { DEFAULT_DATE_FORMAT } from './utils/calendarUtils';
 
 import styles from './Calendar.module.scss';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import Button from "../Button/Button";
 import { useCalendar } from "./useCalendar";
-
-type CalendarTypeView = 'month' | 'year' | 'date';
+import { CalendarTypeView } from "./calendarTypes";
 
 interface CalendarProps {
   size?: 'small' | 'large';
@@ -37,31 +36,29 @@ const Calendar = ({
   selectionMode
 }: CalendarProps) => {
   const {
+    month,
+    weekDays,
     shortMonthNames,
     fullMonthNames,
-    weekDays,
     currentView,
-    setCurrentView,
     visibleDate,
-    month,
     yearsList,
     isOverlayVisible,
-    onDropdownToggle,
-    onPrev,
-    onNext,
     getCalendarLabel,
+    toggleOverlay,
+    goToPrevious,
+    goToNext,
     isNextDisabled,
     isPrevDisabled,
-    isYearDisabled,
-    isMonthDisabled,
     isDateDisabled,
-    onYearSelect,
-    onMonthSelect,
+    isMonthDisabled,
+    isYearDisabled,
     onDateSelect,
-    isYearSelected,
-    isDateSelected,
+    onMonthSelect,
+    onYearSelect,
+    setCurrentView,
     setOverlayVisible,
-    isMonthSelected
+    getSelectionBtnStatus
   } = useCalendar({
     value,
     typeView,
@@ -76,7 +73,7 @@ const Calendar = ({
   return (
     <div className={styles.Calendar}>
       <Button size={size} onClick={(event) => {
-        onDropdownToggle();
+        toggleOverlay();
         event.stopPropagation();
       }}>
         {getCalendarLabel()}
@@ -90,7 +87,7 @@ const Calendar = ({
             iconLeft={faChevronLeft}
             appearance="plainDefault"
             isDisabled={isPrevDisabled()}
-            onClick={onPrev}
+            onClick={goToPrevious}
             className={styles['left-chevron']}
           />
           {currentView === 'year' && (
@@ -115,7 +112,7 @@ const Calendar = ({
           <Button
             iconLeft={faChevronRight}
             appearance="plainDefault"
-            onClick={onNext}
+            onClick={goToNext}
             isDisabled={isNextDisabled()}
             className={styles['right-chevron']}
           />
@@ -123,12 +120,14 @@ const Calendar = ({
 
         {currentView === 'year' && (
           <div className={`${styles['Calendar-menu']} ${styles['Calendar-yearsMenu']}`}>
-            {yearsList.map((year) => (
+            {yearsList.map((year, i) => (
               <CalendarButton
                 key={year}
                 isDisabled={isYearDisabled(year)}
-                isSelected={isYearSelected(year)}
                 onClick={() => onYearSelect(year)}
+                selectionStatus={getSelectionBtnStatus('year', year)}
+                isFirstColumn={i % 2 === 0}
+                isLastColumn={i % 2 === 1}
               >
                 {year}
               </CalendarButton>
@@ -142,8 +141,10 @@ const Calendar = ({
               <CalendarButton
                 key={monthName}
                 isDisabled={isMonthDisabled(i)}
-                isSelected={isMonthSelected(i)}
                 onClick={() => onMonthSelect(i)}
+                selectionStatus={getSelectionBtnStatus('month', i)}
+                isFirstColumn={i % 3 === 0}
+                isLastColumn={i % 3 === 2}
               >
                 {monthName}
               </CalendarButton>
@@ -158,13 +159,14 @@ const Calendar = ({
             ))}
             {month?.dates?.map((week, i) => (
               <React.Fragment key={i}>
-                {week.map((date) => (
+                {week.map((date, j) => (
                   <CalendarButton
                     key={date.day}
                     isDisabled={isDateDisabled(date)}
-                    isSelected={isDateSelected(date)}
-                    isRounded
-                    isHighlighted={date.today}
+                    appearance="rounded"
+                    selectionStatus={getSelectionBtnStatus('date', date)}
+                    isFirstColumn={j === 0}
+                    isLastColumn={j === 6}
                     onClick={() => onDateSelect(date)}
                   >
                     {date.day}

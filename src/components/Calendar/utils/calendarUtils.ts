@@ -1,21 +1,7 @@
 import moment from 'moment';
+import { DayInfo, Month } from "./calendarTypes";
 
 export const DEFAULT_DATE_FORMAT = 'YYYY/MM/DD';
-
-export interface DayInfo {
-  day: number;
-  month: number;
-  year: number;
-  isFromOtherMonth: boolean;
-  today: boolean;
-  formattedDate: string;
-}
-
-export interface Month {
-  month: number;
-  year: number;
-  dates: DayInfo[][];
-}
 
 export function createMonth(month: number, year: number, dateFormat: string): Month {
   const currentDate = moment();

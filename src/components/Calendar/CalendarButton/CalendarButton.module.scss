@@ -7,9 +7,12 @@
   box-sizing: border-box;
   cursor: pointer;
   color: var(--text-01);
+  min-width: 40px;
+  min-height: 40px;
 
-  &:hover:not(.is-disabled):not(.is-selected) {
-    background: var(--hover-item);
+  &:hover:not(.is-disabled):not(.is-selected):not(.is-highlightedMiddle) {
+    border: 1px solid var(--focus);
+    background-color: var(--hover-item);
   }
 
   &.is-disabled {
@@ -18,18 +21,73 @@
   }
 
   &.is-selected {
-    background: var(--interactive-01);
-    color: var(--ui-01);
-    font-weight: 600;
+    color: var(--text-04);
+    background: var(--focus);
+    font-weight: 500;
   }
 
-  &.is-rounded {
+  &.is-highlighted {
+    background-color: var(--information-04);
+  }
+
+  &.is-highlightedMiddle {
+    background-color: var(--information-04);
+    border-radius: 0;
+
+    &.is-firstColumn {
+      &.rounded-appearance {
+        border-bottom-left-radius: 50%;
+        border-top-left-radius: 50%;
+      }
+
+      &:not(.rounded-appearance) {
+        border-bottom-left-radius: 4px;
+        border-top-left-radius: 4px;
+      }
+    }
+
+    &.is-lastColumn {
+      &.rounded-appearance {
+        border-bottom-right-radius: 50%;
+        border-top-right-radius: 50%;
+      }
+
+      &:not(.rounded-appearance) {
+        border-bottom-right-radius: 4px;
+        border-top-right-radius: 4px;
+      }
+    }
+  }
+
+  &.is-highlightedRangeStart {
+    position: relative;
+
+    &:before {
+      content: "";
+      position: absolute;
+      background-color: var(--information-04);
+      border-radius: 50% 0 0 50%;
+      height: 100%;
+      width: 100%;
+      z-index: -1;
+    }
+  }
+
+  &.is-highlightedRangeEnd {
+    position: relative;
+
+    &:before {
+      content: "";
+      position: absolute;
+      background-color: var(--information-04);
+      border-radius: 0 50% 50% 0;
+      height: 100%;
+      width: 100%;
+      z-index: -1;
+    }
+  }
+
+  &.rounded-appearance:not(.is-highlightedMiddle) {
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
-  }
-
-  &.is-highlighted:not(.is-selected) {
-    background: var(--ui-background);
   }
 }

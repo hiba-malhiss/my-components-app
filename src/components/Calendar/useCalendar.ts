@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import moment, { Moment } from 'moment';
-import { createMonth, DayInfo } from './calendar.utils';
-
-type CalendarTypeView = 'month' | 'year' | 'date';
+import { createMonth } from './utils/calendarUtils';
+import { CalendarTypeView, DayInfo } from "./calendarTypes";
+import { getSelectionStatus } from "./utils/getSelectionStatus";
 
 interface UseCalendarProps {
   value: Moment | Moment[];
@@ -86,26 +86,26 @@ export const useCalendar = ({
       : formatValue(value);
   };
 
-  const onDropdownToggle = (visible?: boolean) => {
+  const toggleOverlay = (visible?: boolean) => {
     const toggle = visible ?? !isOverlayVisible;
     setOverlayVisible(toggle);
     if (!toggle) setCurrentView(typeView);
   };
 
-  const moveVisibleDate = (unit: 'year' | 'month', amount: number) => {
+  const shiftVisibleDate = (unit: 'year' | 'month', amount: number) => {
     setVisibleDate(prev => prev.clone().add(amount, unit));
   };
 
-  const onPrev = () => {
+  const goToPrevious = () => {
     if (currentView === 'year') setDecadeBaseYear(prev => prev - 10);
-    else if (currentView === 'month') moveVisibleDate('year', -1);
-    else moveVisibleDate('month', -1);
+    else if (currentView === 'month') shiftVisibleDate('year', -1);
+    else shiftVisibleDate('month', -1);
   };
 
-  const onNext = () => {
+  const goToNext = () => {
     if (currentView === 'year') setDecadeBaseYear(prev => prev + 10);
-    else if (currentView === 'month') moveVisibleDate('year', 1);
-    else moveVisibleDate('month', 1);
+    else if (currentView === 'month') shiftVisibleDate('year', 1);
+    else shiftVisibleDate('month', 1);
   };
 
   const isNavigationDisabled = (direction: 'prev' | 'next') => {
@@ -214,50 +214,16 @@ export const useCalendar = ({
     updateSelectedDates(selectedMoment);
   };
 
-  const isDateSelected = (date: DayInfo) => {
-    const momentDate = moment({ year: date.year, month: date.month, day: date.day });
-
-    if (selectionMode === 'range' && selectedDates.length > 0) {
-      const [start, end] = selectedDates;
-      return (
-        momentDate.isSame(start, 'day') ||
-        (end && momentDate.isSame(end, 'day')) ||
-        (end && momentDate.isBetween(start, end, 'day'))
-      );
-    }
-
-    return selectedDates.some(d =>
-      d.date() === date.day &&
-      d.month() === date.month &&
-      d.year() === date.year
-    );
-  };
-
-  const isYearSelected = (year: number) => {
-    const momentYear = moment({ year });
-    if (selectionMode === 'range' && selectedDates.length > 0) {
-      const [start, end] = selectedDates;
-      return (
-        momentYear.isSame(start, 'year') ||
-        (end && momentYear.isSame(end, 'year')) ||
-        (end && momentYear.isBetween(start, end, 'year'))
-      );
-    }
-    return selectedDates.some(d => d.year() === year);
-  };
-
-  const isMonthSelected = (monthIdx: number) => {
-    const momentMonth = moment({ year: visibleDate.year(), month: monthIdx });
-    if (selectionMode === 'range' && selectedDates.length > 0) {
-      const [start, end] = selectedDates;
-      return (
-        momentMonth.isSame(start, 'month') ||
-        (end && momentMonth.isSame(end, 'month')) ||
-        (end && momentMonth.isBetween(start, end, 'month'))
-      );
-    }
-    return selectedDates.some(d => d.month() === monthIdx && d.year() === visibleDate.year());
-  };
+  const getSelectionBtnStatus = useCallback((type, value) => {
+    return getSelectionStatus(
+      typeView,
+      type,
+      value,
+      selectedDates,
+      selectionMode,
+      visibleDate.year()
+    )
+  }, [visibleDate, selectionMode, typeView, selectedDates])
 
   return {
     month,
@@ -266,25 +232,22 @@ export const useCalendar = ({
     fullMonthNames,
     currentView,
     visibleDate,
-    selectedDates,
     yearsList,
     isOverlayVisible,
     getCalendarLabel,
-    onDropdownToggle,
-    onPrev,
-    onNext,
+    toggleOverlay,
+    goToPrevious,
+    goToNext,
     isNextDisabled,
     isPrevDisabled,
     isDateDisabled,
     isMonthDisabled,
     isYearDisabled,
-    isDateSelected,
-    isMonthSelected,
-    isYearSelected,
     onDateSelect,
     onMonthSelect,
     onYearSelect,
     setCurrentView,
     setOverlayVisible,
+    getSelectionBtnStatus
   };
 };

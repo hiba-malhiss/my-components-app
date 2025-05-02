@@ -2,37 +2,94 @@ import React, { useState } from 'react';
 import moment from 'moment';
 import Calendar from './components/Calendar/Calendar';
 
+const typeViews = ['date', 'month', 'year'] as const;
+const selectionModes = ['single', 'multiple', 'range'] as const;
+const sizes = ['small', 'medium', 'large'] as const;
+
 const App = () => {
-  const [selectedDate, setSelectedDate] = useState<moment.Moment | null>(null);
-  const [selectedYear, setSelectedYear] = useState<moment.Moment | null>(null);
-  const [selectedMonth, setSelectedMonth] = useState<moment.Moment | null>(null);
+  const [value, setValue] = useState<moment.Moment | moment.Moment[] | null>(null);
+  const [typeView, setTypeView] = useState<typeof typeViews[number]>('date');
+  const [selectionMode, setSelectionMode] = useState<typeof selectionModes[number]>('range');
+  const [size, setSize] = useState<typeof sizes[number]>('small');
+  const [disableFutureDates, setDisableFutureDates] = useState(true);
+
+  const handleTypeViewChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setTypeView(e.target.value as typeof typeViews[number]);
+    setValue(null);
+  };
+
+  const handleSelectionModeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectionMode(e.target.value as typeof selectionModes[number]);
+    setValue(null);
+  };
+
+  const handleSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSize(e.target.value as typeof sizes[number]);
+  };
+
+  const toggleDisableFutureDates = () => {
+    setDisableFutureDates(!disableFutureDates);
+    setValue(null);
+  };
 
   return (
-    <div style={{ padding: 40, display: 'flex', gap: '20px' }}>
-      <h2>Custom Calendar Component</h2>
-      <Calendar
-        value={selectedDate}
-        onChange={setSelectedDate}
-        size="small"
-        typeView="date"
-        disableFutureDates={true}
-        minDate={moment({year: 2023, month: 5, day: 5})}
-      />
-      <Calendar
-        value={selectedYear}
-        onChange={setSelectedYear}
-        size="small"
-        typeView="year"
-        disableFutureDates={true}
-      />
-      <Calendar
-        value={selectedMonth}
-        onChange={setSelectedMonth}
-        size="small"
-        typeView="month"
-        disableFutureDates={true}
-      />
+    <div style={{ padding: 40 }}>
+      <h2>Calendar Test Page</h2>
 
+      <div style={{ display: 'flex', gap: 20, marginBottom: 20 }}>
+        <div>
+          <label>Type View: </label>
+          <select value={typeView} onChange={handleTypeViewChange}>
+            {typeViews.map((view) => (
+              <option key={view} value={view}>
+                {view}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label>Selection Mode: </label>
+          <select value={selectionMode} onChange={handleSelectionModeChange}>
+            {selectionModes.map((mode) => (
+              <option key={mode} value={mode}>
+                {mode}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label>Size: </label>
+          <select value={size} onChange={handleSizeChange}>
+            {sizes.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label>
+            <input
+              type="checkbox"
+              checked={disableFutureDates}
+              onChange={toggleDisableFutureDates}
+            />
+            Disable Future Dates
+          </label>
+        </div>
+      </div>
+
+      <Calendar
+        value={value}
+        onChange={setValue}
+        typeView={typeView}
+        selectionMode={selectionMode}
+        size={size}
+        disableFutureDates={disableFutureDates}
+      />
     </div>
   );
 };
